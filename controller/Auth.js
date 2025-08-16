@@ -6,8 +6,6 @@ const bcrypt = require("bcrypt");
 const Profile = require("../models/profile");
 const jwt = require("jsonwebtoken");
 
-
-
 //Send otp function
 exports.sendOtp = async (req, res) => {
   try {
@@ -160,11 +158,6 @@ exports.signUp = async (req, res) => {
   }
 };
 
-
-
-
-
-
 /// login Function
 exports.Login = async (req, res) => {
   try {
@@ -210,20 +203,61 @@ exports.Login = async (req, res) => {
         Token,
         message: "Logged In Successfully",
       });
-    }
-    
-    else {
+    } else {
       return res.status(403).json({
         success: false,
         message: "Password is Incorrect",
       });
     }
-  }
-   catch (error) {
+  } catch (error) {
     console.log(error);
     res.status(500).json({
       success: false,
       message: "Something went wrong while Login, please try again",
+    });
+  }
+};
+
+///change password
+exports.changePassword = async (req, res) => {
+  try {
+    const { email, oldpassword, newpassword } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(500).json({
+        success: false,
+        message: "User not Found, please signup first",
+      });
+    }
+
+    // Verify old password
+    const isMatch = await bcrypt.compare(oldpassword, user.password);
+    if (!isMatch) {
+      return res.status(403).json({
+        success: false,
+        message: "old password is incorrect",
+      });
+    }
+
+    
+    const hashedPassword = await bcrypt.hash(newpassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+
+    return res.status(200).json({
+      success: true,
+      message: "Password change Successfully",
+    });
+  } 
+  catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message:
+        "Something went wrong while changing the password, please try again",
     });
   }
 };
