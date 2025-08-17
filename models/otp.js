@@ -34,7 +34,6 @@ async function sendemailVerification(email, otp) {
 }
 
 
-
 OtpSchema.pre("save", async function (next) {
   await sendemailVerification(this.email, this.otp);
   next();
