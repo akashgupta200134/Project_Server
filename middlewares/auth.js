@@ -47,7 +47,7 @@ exports.auth = async (req, res, next) => {
 
 exports.isStudent = async (req, res, next) => {
   try {
-    if(req.User.accountType != "Student"){
+    if(req.User.accountType !== "Student"){
         return res.status(401).json({
         success: false,
         messgae: "You are not a student",
@@ -71,7 +71,7 @@ exports.isStudent = async (req, res, next) => {
 
 exports.isAdmin = async (req, res, next) => {
   try {
-    if(req.User.accountType != "Admin"){
+    if(req.User.accountType !== "Admin"){
         return res.status(401).json({
         success: false,
         messgae: "You are not a Admin",
@@ -92,7 +92,7 @@ exports.isAdmin = async (req, res, next) => {
 
 exports.isInstructor = async (req, res, next) => {
   try {
-    if(req.User.accountType != "Instructor"){
+    if(req.User.accountType !== "Instructor"){
         return res.status(401).json({
         success: false,
         messgae: "You are not a Instructor",
