@@ -41,23 +41,19 @@ exports.auth = async (req, res, next) => {
   }
 };
 
-
 //isStudent
-
 
 exports.isStudent = async (req, res, next) => {
   try {
-    if(req.User.accountType !== "Student"){
-        return res.status(401).json({
+    if (req.User.accountType !== "Student") {
+      return res.status(401).json({
         success: false,
         messgae: "You are not a student",
       });
     }
 
     next();
-
-  }
-   catch (error) {
+  } catch (error) {
     console.log(error);
     return res.status(500).json({
       success: false,
@@ -66,22 +62,19 @@ exports.isStudent = async (req, res, next) => {
   }
 };
 
-
 //isAdmin
 
 exports.isAdmin = async (req, res, next) => {
   try {
-    if(req.User.accountType !== "Admin"){
-        return res.status(401).json({
+    if (req.User.accountType !== "Admin") {
+      return res.status(401).json({
         success: false,
         messgae: "You are not a Admin",
       });
     }
 
     next();
-
-  }
-   catch (error) {
+  } catch (error) {
     console.log(error);
     return res.status(500).json({
       success: false,
@@ -92,17 +85,15 @@ exports.isAdmin = async (req, res, next) => {
 
 exports.isInstructor = async (req, res, next) => {
   try {
-    if(req.User.accountType !== "Instructor"){
-        return res.status(401).json({
+    if (req.User.accountType !== "Instructor") {
+      return res.status(401).json({
         success: false,
         messgae: "You are not a Instructor",
       });
     }
 
     next();
-
-  }
-   catch (error) {
+  } catch (error) {
     console.log(error);
     return res.status(500).json({
       success: false,
@@ -110,4 +101,3 @@ exports.isInstructor = async (req, res, next) => {
     });
   }
 };
-
