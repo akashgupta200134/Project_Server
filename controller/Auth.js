@@ -5,6 +5,7 @@ const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
 const Profile = require("../models/profile");
 const jwt = require("jsonwebtoken");
+const sendMailer  = require("../utils/mailSender")
 
 //Send otp function
 exports.sendOtp = async (req, res) => {
@@ -241,17 +242,25 @@ exports.changePassword = async (req, res) => {
       });
     }
 
-    
     const hashedPassword = await bcrypt.hash(newpassword, 10);
     user.password = hashedPassword;
     await user.save();
 
+    const changepasswordemail = await transporter.sendMail({
+      from: "Akash Gupta",
+      to: `${email}`,
+      subject:`Password change email`,
+      html:`password change successfully`,
+    });
+
+     console.log("Password change email sent:", changepasswordemail.messageId);
 
     return res.status(200).json({
       success: true,
       message: "Password change Successfully",
     });
   } 
+
   catch (error) {
     console.log(error);
     res.status(500).json({
@@ -261,3 +270,5 @@ exports.changePassword = async (req, res) => {
     });
   }
 };
+
+
