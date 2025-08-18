@@ -141,8 +141,9 @@ exports.deleteSubSection = async (req, res) => {
       message: "SubSection Deleted Successfully",
     });
 
+  } 
 
-  } catch (error) {
+  catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
@@ -150,5 +151,6 @@ exports.deleteSubSection = async (req, res) => {
     });
   }
 };
+
 
 
