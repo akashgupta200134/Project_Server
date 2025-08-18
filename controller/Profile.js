@@ -105,7 +105,7 @@ exports.getuserDetails = async (req, res) => {
       });
     };
 
-    
+
     // return success response
     return res.status(200).json({
       success: true,
@@ -121,3 +121,5 @@ exports.getuserDetails = async (req, res) => {
     });
   }
 };
+
+
