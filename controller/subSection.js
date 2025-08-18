@@ -35,21 +35,26 @@ exports.createSubSection = async (req, res) => {
             description: description,
             videoUrl: uploadDetails.secure_url,
         })
+
         //update corresponding section with newly created sub-section
         const updatedSection = await section.findByIdAndUpdate(
             {_id: sectionId},
             {$push:{ subsection: subSectionDetails._id } },
             {new: true}
         ).populate("subsection")
+        
+        console.log(updatedSection);
 
         //HW: log updated section here, after adding populate query
         //return updated section in the response
+
         return res.status(200).json({
             succcess: true,
             data: updatedSection,
         })
         
-    } catch (error) {
+    } 
+    catch (error) {
         //Handle any error that may occur duing the process
         console.error("Error crating a new sub-section: ", error);
         return res.status(500).json({
@@ -136,6 +141,7 @@ exports.deleteSubSection = async (req, res) => {
       success: true,
       message: "SubSection Deleted Successfully",
     });
+
 
   } catch (error) {
     console.error(error);
