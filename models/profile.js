@@ -6,7 +6,7 @@ const ProfileSchema = new mongoose.Schema({
     trim: true,
   },
 
-  professsion: {
+  profession: {
     type: String,
     trim: true,
   },
@@ -27,4 +27,4 @@ const ProfileSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model("profileschema", ProfileSchema);
+module.exports = mongoose.model("profile", ProfileSchema);
