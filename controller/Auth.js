@@ -5,13 +5,13 @@ const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
 const Profile = require("../models/profile");
 const jwt = require("jsonwebtoken");
-const sendMailer  = require("../utils/mailSender")
+const sendMailer = require("../utils/mailSender");
 
 //Send otp function
 exports.sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
-    const checkUserpresent = User.findOne({ email });
+    const checkUserpresent = await User.findOne({ email });
     if (checkUserpresent) {
       return res.status(401).json({
         messsage: "This email is already registred",
@@ -110,20 +110,24 @@ exports.signUp = async (req, res) => {
       .limit(1);
     console.log("Recent otp is ", recentOtp);
 
-    if (recentOtp.length == 0) {
+    if (recentOtp.length === 0) {
       return res.status(400).json({
         success: false,
         message: "OTP not Found",
       });
-    } else if (recentOtp != otp) {
-      return res.status(404).json({
-        success: false,
-        message: "Invalid Otp",
-      });
-    }
+    } else if (recentOtp[0].otp !== otp) {
+    return res.status(404).json({
+      success: false,
+      message: "Invalid Otp",
+    });
+}
+
+    
 
     // encrypt the passord
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    let approved = accountType === "Instructor" ? false : true;
 
     // create entry in database
     const profileDetails = await Profile.create({
@@ -139,16 +143,17 @@ exports.signUp = async (req, res) => {
       lastName,
       email,
       password: hashedPassword,
-      accountType,
-      additionalDetials: profileDetails,
+      accountType: accountType,
+      approved: approved,
+      additionalDetials: profileDetails._id,
       contactNumber,
-      imageUrl: `https://api.dicebear.com/5.x/initials/svg?seed=${firstname} ${lastName}`,
+      imageUrl: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
     });
 
     return res.status(200).json({
       success: true,
-      message: "User Registred Successfully",
       user,
+      message: "User Registred Successfully",
     });
   } catch (error) {
     console.log(error);
@@ -160,61 +165,66 @@ exports.signUp = async (req, res) => {
 };
 
 /// login Function
-exports.Login = async (req, res) => {
+exports.login = async (req, res) => {
   try {
+    //get data from req body
     const { email, password } = req.body;
-
-    if (!password || !email) {
-      return res.status(403).json({
+    //validation of data
+    if (!email || !password) {
+      //Return 400 Bad Request status code with error message
+      return res.status(400).json({
         success: false,
-        message: "All fields are required",
+        message: `Please Fill up All the Required Fields`,
       });
     }
-
-    const user = await User.findOne({ email });
+    //check user exists or not
+    const user = await User.findOne({ email }).populate("additionalDetials");
     if (!user) {
-      return res.status(500).json({
+      return res.status(401).json({
+        //Return 401 unauthorized status code with error message
         success: false,
-        message: "User not Found, please signup first",
+        message: `User is not registered with Us, Please signup to Continue`,
       });
     }
-
+    //Generate JWT, after password match
     if (await bcrypt.compare(password, user.password)) {
       const payload = {
         email: user.email,
         id: user._id,
-        role: user.role,
+        accountType: user.accountType,
       };
-
-      const Token = jwt.sign(payload, process.env.JWT_SECRET, {
+      const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "2h",
       });
 
-      user.Token = Token;
+      //save token to user document in database
+      user.token = token;
       user.password = undefined;
 
+      //create cookie and send response
       const options = {
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         httpOnly: true,
       };
 
-      return res.cookie("token", Token, options).status(200).json({
+      res.cookie("token", token, options).status(200).json({
         success: true,
+        token,
         user,
-        Token,
-        message: "Logged In Successfully",
+        message: `User Login Success`,
       });
     } else {
-      return res.status(403).json({
+      return res.status(401).json({
         success: false,
-        message: "Password is Incorrect",
+        message: `Password Is Incorrect`,
       });
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+    //Return 500 Internal Server Error status code with error message
+    return res.status(500).json({
       success: false,
-      message: "Something went wrong while Login, please try again",
+      message: `Login Failure Please Try Again`,
     });
   }
 };
@@ -246,22 +256,19 @@ exports.changePassword = async (req, res) => {
     user.password = hashedPassword;
     await user.save();
 
-    const changepasswordemail = await transporter.sendMail({
-      from: "Akash Gupta",
-      to: `${email}`,
-      subject:`Password change email`,
-      html:`password change successfully`,
-    });
+    const changepasswordemail = await sendMailer(
+      email,
+      "Password Change Confirmation",
+      "<h3>Your password has been changed successfully</h3>"
+    );
 
-     console.log("Password change email sent:", changepasswordemail.messageId);
+    console.log("Password change email sent:", changepasswordemail.messageId);
 
     return res.status(200).json({
       success: true,
       message: "Password change Successfully",
     });
-  } 
-
-  catch (error) {
+  } catch (error) {
     console.log(error);
     res.status(500).json({
       success: false,
@@ -270,5 +277,3 @@ exports.changePassword = async (req, res) => {
     });
   }
 };
-
-
