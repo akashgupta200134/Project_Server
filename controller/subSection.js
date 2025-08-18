@@ -42,7 +42,7 @@ exports.createSubSection = async (req, res) => {
             {$push:{ subsection: subSectionDetails._id } },
             {new: true}
         ).populate("subsection")
-        
+
         console.log(updatedSection);
 
         //HW: log updated section here, after adding populate query
@@ -84,8 +84,6 @@ exports.updateSubSection = async (req, res) => {
         subSection.title = title;
     }
         
-        
-
     if (description !== undefined) {
         subSection.description = description;
     }
@@ -96,6 +94,7 @@ exports.updateSubSection = async (req, res) => {
         video,
         process.env.FOLDER_NAME,
       );
+      
       subSection.videoUrl = uploadDetails.secure_url;
       subSection.timeDuration = `${uploadDetails.duration}`;
     }
@@ -112,7 +111,7 @@ exports.updateSubSection = async (req, res) => {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: "An error occurred while updating the SubSection",
+      message: "An error occurred while updating the Subsection",
     });
   }
 };
