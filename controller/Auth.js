@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const sendMailer = require("../utils/mailSender");
 
 //Send otp function
-exports.sendOtp = async (req, res) => {
+exports.sendotp = async (req, res) => {
   try {
     const { email } = req.body;
     const checkUserpresent = await User.findOne({ email });
@@ -60,7 +60,7 @@ exports.sendOtp = async (req, res) => {
 };
 
 // signup function
-exports.signUp = async (req, res) => {
+exports.signup = async (req, res) => {
   try {
     const {
       firstName,
@@ -230,7 +230,7 @@ exports.login = async (req, res) => {
 };
 
 ///change password
-exports.changePassword = async (req, res) => {
+exports.changepassword = async (req, res) => {
   try {
     const { email, oldpassword, newpassword } = req.body;
 
