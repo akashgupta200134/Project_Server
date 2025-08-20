@@ -2,7 +2,7 @@ const {instance} = require("../config/razaorpay");
 const Course = require('../models/course');
 const User = require("../models/user");
 const mailSender = require("../utils/mailSender");
-const {courseEnrollmentEmail} = require("../mail/courseEnrollmentemial");
+const {courseEnrollmentEmail} = require("../templets/coursetemplet");
 const mongoose= require("mongoose");
 
 

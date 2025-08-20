@@ -1,3 +1,4 @@
+
 const otpTemplate = (otp) => {
     return `<!DOCTYPE html>
     <html>

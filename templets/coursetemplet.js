@@ -1,6 +1,3 @@
-
-
-
 exports.courseEnrollment = (courseName, name) => {
     return `<!DOCTYPE html>
     <html>

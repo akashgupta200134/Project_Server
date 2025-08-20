@@ -1,11 +1,11 @@
 const OTP = require("../models/otp");
-const user = require("../models/user");
 const User = require("../models/user");
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
 const Profile = require("../models/profile");
 const jwt = require("jsonwebtoken");
 const sendMailer = require("../utils/mailSender");
+
 
 //Send otp function
 exports.sendotp = async (req, res) => {
@@ -147,7 +147,7 @@ exports.signup = async (req, res) => {
       approved: approved,
       additionalDetials: profileDetails._id,
       contactNumber,
-      imageUrl: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
+      image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
     });
 
     return res.status(200).json({

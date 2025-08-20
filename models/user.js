@@ -34,7 +34,7 @@ const UserSchema = new mongoose.Schema(
     additionalDetials: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "Profile",
+      ref: "profile",
     },
 
     courses: [
@@ -46,7 +46,7 @@ const UserSchema = new mongoose.Schema(
 
     image: {
       type: String,
-      required: true,
+      required: false,
     },
 
     token: {
