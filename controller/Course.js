@@ -160,8 +160,7 @@ exports.getCourseDetails = async (req, res) => {
         //find course details
         const courseDetails = await course.find(
             {_id:courseId}
-        )
-        .populate(
+        ).populate(
             {
                 path: "Instructor",
                 populate:{
@@ -170,9 +169,7 @@ exports.getCourseDetails = async (req, res) => {
             }
         )
         .populate("category")
-
-        // .populate("ratingAndReviews")
-
+        .populate("ratingAndReviews")
         .populate({
             path: "courseContent",
             populate:{

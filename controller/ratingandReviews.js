@@ -1,4 +1,4 @@
-const { default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 const course = require("../models/course");
 const ratingandReviews = require("../models/ratingreview");
 
@@ -71,6 +71,7 @@ exports.createRatingandReviews = async (req, res) => {
     });
   }
 };
+
 
 
 
@@ -154,5 +155,6 @@ exports.getAllRatingandReviews = async (req, res) => {
     });
   }
 };
+
 
 
