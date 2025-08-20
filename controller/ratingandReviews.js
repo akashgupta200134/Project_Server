@@ -2,9 +2,9 @@ const { default: mongoose } = require("mongoose");
 const course = require("../models/course");
 const ratingandReviews = require("../models/ratingreview");
 
-// create ratingand reviews function
+//  create rating and reviews function
 
-exports.createratingandreviews = async (req, res) => {
+exports.createRatingandReviews = async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -77,7 +77,7 @@ exports.createratingandreviews = async (req, res) => {
 
 
 // find average rating function
-exports.createratingandreviews = async (req, res) => {
+exports.averageRatingandReviews = async (req, res) => {
   try {
     const courseId = req.body.courseId;
 
@@ -123,11 +123,11 @@ exports.createratingandreviews = async (req, res) => {
 };
 
 
-exports.createratingandreviews = async (req, res) => {
+exports.getAllRatingandReviews = async (req, res) => {
   try {
     const courseId = req.body.courseId;
 
-    const result = await ratingandReviews.find({}).sort({rating : -1}).populate({
+    const getAllRating = await ratingandReviews.find({}).sort({rating : -1}).populate({
         path : "User",
         select : "firstName lastName email image"
     }).populate({
@@ -138,23 +138,12 @@ exports.createratingandreviews = async (req, res) => {
 
 
 
-    if (result.length > 0) {
       return res.status(200).json({
-        success: true,
-        message: " average rating fetch successfully",
-        averageRating: result[0].averageRating,
-        totalReviews: result[0].totalReviews,
-      });
-    }
-    
-     else {
-      return res.status(200).json({
-        success: true,
-        message: "No ratings yet for this course",
-        averageRating: 0,
-        totalReviews: 0,
-      });
-    }
+            success: true,
+            message: "All reviews fetched successfully",
+            data: getAllRating
+        });
+
   }
 
    catch (error) {
@@ -165,3 +154,5 @@ exports.createratingandreviews = async (req, res) => {
     });
   }
 };
+
+
