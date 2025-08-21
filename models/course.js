@@ -46,8 +46,8 @@ const CourseSchema = new mongoose.Schema({
   },
 
   tag: {
-    type: [String],
-    required: true,
+    type: String,
+    required: false,
   },
 
   instruction: {

@@ -5,9 +5,9 @@ const Category = require("../models/category");
 exports.createCategory = async (req, res) => {
   try {
     //fetch data
-    const { name, description } = req.body;
+    const { Name, description } = req.body;
     //validation
-    if (!name || !description) {
+    if (!Name || !description) {
       return res.status(404).json({
         success: false,
         message: "All fields are required",
@@ -16,7 +16,7 @@ exports.createCategory = async (req, res) => {
 
     //create entry in DB
     const CategoryDetails = await Category.create({
-      name: name,
+      Name: Name,
       description: description,
     });
     console.log(CategoryDetails);

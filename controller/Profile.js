@@ -1,6 +1,6 @@
 const Profile = require("../models/profile");
 const User = require('../models/user');
-const {uploadImageToCloudinary} = require('../utils/imageUploader');
+const {imageUploader} = require('../utils/imageUploader');
 
 //Method for updating a profile
 exports.updateProfile = async (req, res) => {
@@ -15,7 +15,7 @@ exports.updateProfile = async (req, res) => {
         const profile = await Profile.findById(user.additionalDetials);
 
         //update profile fields
-        profile.dateOfBirth = dateOfBirth;
+        profile.dateofBirth = dateOfBirth;
         profile.about = about;
         profile.contactNumber = contactNumber;
         profile.gender = gender;
@@ -26,7 +26,7 @@ exports.updateProfile = async (req, res) => {
         //return response
         return res.status(200).json({
             success: true,
-            message: 'Profile Updated Successfully',
+            message:'Profile Updated Successfully',
             profile,
         });
 
@@ -62,7 +62,7 @@ exports.deleteAccount = async (req, res) => {
             });
         }
         //delete associated profile with user
-        await Profile.findByIdAndDelete({_id: user.additionalDetails});
+        await Profile.findByIdAndDelete({_id: user.additionalDetials});
         //TODO: HW unenroll user form all enroled courses
         //Now delete user
         await User.findByIdAndDelete({_id:id});
@@ -90,7 +90,7 @@ exports.getAllUserDetails = async (req, res) => {
         
         //validation and get user details
         const userDetails = await User.findById(id)
-            .populate('additionalDetails')
+            .populate('additionalDetials')
             .exec();
         console.log(userDetails);
         //return response
@@ -112,7 +112,7 @@ exports.updateDisplayPicture = async (req, res) => {
     try {
         const displayPicture = req.files.displayPicture;
         const userId = req.user.id;
-        const image = await uploadImageToCloudinary(
+        const image = await imageUploader(
             displayPicture,
             process.env.FOLDER_NAME,
             1000,

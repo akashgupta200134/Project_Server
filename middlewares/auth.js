@@ -2,28 +2,28 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const User = require("../models/user");
 
-// auth
-
+// auth middleware
 exports.auth = async (req, res, next) => {
+  console.log("Auth middleware triggered");
   try {
     const token =
-      req.cookies.token ||
-      req.body.token ||
-      req.header("Authorisation").replace("Bearer ", "");
+      req.cookies?.token ||
+      req.body?.token ||
+      (req.header("Authorization") && req.header("Authorization").replace("Bearer ", ""));
 
     if (!token) {
       return res.status(401).json({
         success: false,
-        messgae: "Token is not found",
+        message: "Token not found",
       });
     }
 
-    // decode token  and verify
-
     try {
-      const decode = await jwt.verify(token, process.env.JWT_SECRET);
-      console.log(decode);
-      req.User = decode;
+      // decode token and verify
+      const decode = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("Decoded JWT:", decode);
+      req.user = decode;
+
     } catch (error) {
       return res.status(401).json({
         success: false,
@@ -33,19 +33,20 @@ exports.auth = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error);
-    return res.status(401).json({
+    console.error(error);
+    return res.status(500).json({
       success: false,
-      message: "something went wrong while verfiying the token",
+      message: "Something went wrong while verifying the token",
     });
   }
-};
+}
+
+
 
 //isStudent
-
 exports.isStudent = async (req, res, next) => {
   try {
-    if (req.User.accountType !== "Student") {
+    if (req.user.accountType !== "Student") {
       return res.status(401).json({
         success: false,
         messgae: "You are not a student",
@@ -66,7 +67,7 @@ exports.isStudent = async (req, res, next) => {
 
 exports.isAdmin = async (req, res, next) => {
   try {
-    if (req.User.accountType !== "Admin") {
+    if (req.user.accountType !== "Admin") {
       return res.status(401).json({
         success: false,
         messgae: "You are not a Admin",
@@ -85,7 +86,7 @@ exports.isAdmin = async (req, res, next) => {
 
 exports.isInstructor = async (req, res, next) => {
   try {
-    if (req.User.accountType !== "Instructor") {
+    if (req.user.accountType !== "Instructor") {
       return res.status(401).json({
         success: false,
         messgae: "You are not a Instructor",

@@ -1,9 +1,12 @@
-
 const cloudinary = require("cloudinary").v2;
 
 exports.imageUploader = async (file, folder, height, quality) => {
   try {
-    const options = { folder };
+    if (!file || !file.tempFilePath) {
+      throw new Error("Invalid file input");
+    }
+
+    const options = { folder, resource_type: "auto" };
 
     if (height) {
       options.height = height;
@@ -14,14 +17,10 @@ exports.imageUploader = async (file, folder, height, quality) => {
       options.quality = quality;
     }
 
-    options.resource_type = "auto"; 
-
-    
-    return await cloudinary.uploader.upload(file.tempFilePath, options);
-
-  }
-   catch (error) {
-    console.error("Cloudinary Upload Error:", error);
-    throw new Error("Image upload failed");
+    const result = await cloudinary.uploader.upload(file.tempFilePath, options);
+    return result;
+  } catch (error) {
+    console.error("Cloudinary Upload Error:", error.message);
+    throw new Error(error.message || "Image upload failed");
   }
 };
