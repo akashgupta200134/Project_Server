@@ -80,14 +80,26 @@ exports.updateSection = async (req, res) => {
 };
 
 
+exports.deleteSection = async (req, res) => {
+  try {
+    const { sectionId, courseId } = req.body;
 
-exports.deleteSection = async (req , res) =>{
+    if (!sectionId || !courseId) {
+      return res.status(400).json({
+        success: false,
+        message: "SectionId and CourseId are required",
+      });
+    }
 
-      try {
-    const {sectionId} = req.params;
 
-    await Section.findByIdAndDelete(
-      sectionId,
+    // Delete the section
+    await Section.findByIdAndDelete(sectionId);
+
+
+    // Remove reference from courseContent
+    await course.findByIdAndUpdate(
+      courseId,
+      { $pull: { courseContent: sectionId } },
       { new: true }
     );
 
@@ -96,15 +108,14 @@ exports.deleteSection = async (req , res) =>{
       message: "Section deleted successfully",
     });
 
-  }
-   catch (error) {
+  } catch (error) {
+    console.error("Error deleting section:", error);
     return res.status(500).json({
-      success: true,
+      success: false,
       message: "Something went wrong while deleting the Section",
+      error: error.message,
     });
-
   }
 };
-
 
 
