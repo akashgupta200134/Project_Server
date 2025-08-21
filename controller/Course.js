@@ -180,14 +180,14 @@ exports.getCourseDetails = async (req, res) => {
             {_id:courseId}
         ).populate(
             {
-                path: "Instructor",
+                path: "instructor",
                 populate:{
                     path: "additionalDetials",
                 },
             }
         )
         .populate("category")
-        .populate("ratingAndReviews")
+        .populate("ratingandReviews")
         .populate({
             path: "courseContent",
             populate:{

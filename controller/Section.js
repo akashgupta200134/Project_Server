@@ -1,4 +1,4 @@
-const section = require("../models/section");
+const Section = require("../models/section");
 const course = require("../models/course");
 
 exports.createSection = async (req, res) => {
@@ -12,7 +12,7 @@ exports.createSection = async (req, res) => {
       });
     }
 
-    const newSection = await section.create({ sectionName });
+    const newSection = await Section.create({ sectionName });
 
     const updatecourseDetails = await course
       .findByIdAndUpdate(
@@ -41,7 +41,7 @@ exports.createSection = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      success: true,
+      success: false,
       message: "Something went wrong while creating Section",
     });
   }
@@ -57,7 +57,7 @@ exports.updateSection = async (req, res) => {
         message: `All fields are required`,
       });
     }
-    const newSection = await section.findByIdAndUpdate(
+    const newSection = await Section.findByIdAndUpdate(
       sectionId,
       { sectionName },
       { new: true }
@@ -86,7 +86,7 @@ exports.deleteSection = async (req , res) =>{
       try {
     const {sectionId} = req.params;
 
-    await section.findByIdAndDelete(
+    await Section.findByIdAndDelete(
       sectionId,
       { new: true }
     );
