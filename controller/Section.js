@@ -91,7 +91,6 @@ exports.deleteSection = async (req, res) => {
       });
     }
 
-
     // Delete the section
     await Section.findByIdAndDelete(sectionId);
 
@@ -117,5 +116,4 @@ exports.deleteSection = async (req, res) => {
     });
   }
 };
-
 
